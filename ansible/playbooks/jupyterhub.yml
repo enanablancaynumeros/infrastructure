@@ -1,0 +1,4 @@
+- name: Configure and deploy jupyterhub
+  hosts: webservers
+  roles:
+    - { role: docker_install, tags: [ 'docker' ] }

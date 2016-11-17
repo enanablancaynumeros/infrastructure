@@ -1,0 +1,16 @@
+version: "2"
+
+services:
+  jupyterhub:
+    build: .
+    restart: always
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+      - "data:${DATA_VOLUME_CONTAINER}"
+    ports:
+      - "8000:8000"
+
+volumes:
+  data:
+    external:
+      name: ${DATA_VOLUME_HOST}
