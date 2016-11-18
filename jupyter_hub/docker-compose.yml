@@ -2,13 +2,23 @@ version: "2"
 
 services:
   jupyterhub:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
       - "data:${DATA_VOLUME_CONTAINER}"
+    environment:
+      # Using this run command (optional)
+      DOCKER_NETWORK_NAME: jupyterhub-network
+      SSL_KEY: '/srv/jupyterhub/server.key'
+      SSL_CERT: '/srv/jupyterhub/server.crt'
+    command: >
+      jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
+
     ports:
-      - "8000:8000"
+      - "443:443"
 
 volumes:
   data:
