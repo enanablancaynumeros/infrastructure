@@ -1,0 +1,10 @@
+- name: Start the jupyterhub container
+  docker:
+    name: jupyterhub
+    restart_policy: on-failure
+    image: "{{ private_docker_registry_base }}/{{ dsl_data_service_docker_image | default('dsl_data_service') }}:{{ dsl_data_service_version }}"
+    state: reloaded
+    env: "{{ dsl_data_service_envs }}"
+    ports:
+      - "{{ dsl_data_service_port | default(80) }}:80"
+    command: --migrate --add_users

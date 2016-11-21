@@ -8,4 +8,7 @@ RUN pip install pip --upgrade
 # Install packages in default Python 3 environment
 RUN pip install \
   beautifulsoup4==4.4.* \
-  xgboost==0.6a2 \
+  xgboost==0.6a2
+
+# R notebook
+RUN conda install -c r r-essentials

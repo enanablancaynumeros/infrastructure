@@ -2,3 +2,4 @@
   hosts: webservers
   roles:
     - { role: docker_install, tags: [ 'docker' ] }
+    - { role: docker_jupyterhub, tags: [ 'jupyterhub', 'deploy' ] }
