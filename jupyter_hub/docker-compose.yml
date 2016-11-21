@@ -4,23 +4,33 @@ services:
   jupyterhub:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.jupyterhub
     restart: always
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
       - "data:${DATA_VOLUME_CONTAINER}"
     environment:
       # Using this run command (optional)
-      DOCKER_NETWORK_NAME: jupyterhub-network
-      SSL_KEY: '/srv/jupyterhub/server.key'
-      SSL_CERT: '/srv/jupyterhub/server.crt'
+      DOCKER_NOTEBOOK_IMAGE: ${DOCKER_NOTEBOOK_IMAGE}
+      DOCKER_NETWORK_NAME: ${DOCKER_NETWORK_NAME}
+      SSL_KEY: ${SSL_KEY}
+      SSL_CERT: ${SSL_CERT}
     command: >
       jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
-
     ports:
       - "443:443"
+
+  custom_notebook:
+    build:
+      context: .
+      dockerfile: Dockerfile.notebook
 
 volumes:
   data:
     external:
       name: ${DATA_VOLUME_HOST}
+
+networks:
+  default:
+    external:
+      name: ${DOCKER_NETWORK_NAME}

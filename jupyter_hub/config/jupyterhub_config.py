@@ -1,21 +1,26 @@
 import os
 
 data_dir = os.environ.get('DATA_VOLUME_CONTAINER', '/data')
-# jupyterhub_config.py
-c = get_config()
-
-c.JupyterHub.ssl_key = '/srv/jupyterhub/server.key'
-c.JupyterHub.ssl_cert = '/srv/jupyterhub/server.crt'
-
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+
+c = get_config()
 
 # We rely on environment variables to configure JupyterHub so that we
 # avoid having to rebuild the JupyterHub container every time we change a
 # configuration parameter.
 
+# Spawn single-user servers as Docker containers
+c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+# Spawn containers from this image
+c.DockerSpawner.container_image = os.environ['DOCKER_NOTEBOOK_IMAGE']
+# JupyterHub requires a single-user instance of the Notebook server, so we
+# default to using the `start-singleuser.sh` script included in the
 # jupyter/docker-stacks *-notebook images as the Docker run command when
 # spawning containers.  Optionally, you can override the Docker run command
+# using the DOCKER_SPAWN_CMD environment variable.
+spawn_cmd = os.environ.get('DOCKER_SPAWN_CMD', "start-singleuser.sh")
+c.DockerSpawner.extra_create_kwargs.update({'command': spawn_cmd})
 # Connect containers to this Docker network
 network_name = os.environ['DOCKER_NETWORK_NAME']
 c.DockerSpawner.use_internal_ip = True
@@ -44,6 +49,8 @@ c.JupyterHub.hub_port = 8080
 
 # TLS config
 c.JupyterHub.port = 443
+c.JupyterHub.ssl_key = os.environ['SSL_KEY']
+c.JupyterHub.ssl_cert = os.environ['SSL_CERT']
 
 # Persist hub data on volume mounted inside container
 c.JupyterHub.db_url = os.path.join('sqlite:///', data_dir, 'jupyterhub.sqlite')
