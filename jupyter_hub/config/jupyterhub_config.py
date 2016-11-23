@@ -56,7 +56,7 @@ c.JupyterHub.ssl_cert = os.environ['SSL_CERT']
 c.JupyterHub.db_url = os.path.join('sqlite:///', data_dir, 'jupyterhub.sqlite')
 c.JupyterHub.cookie_secret_file = os.path.join(data_dir, 'jupyterhub_cookie_secret')
 
-# Whitlelist users and admins
+# Whitelist users and admins
 c.Authenticator.whitelist = whitelist = set()
-c.Authenticator.admin_users = admin = set()
+c.Authenticator.admin_users = {os.environ['ADMIN_USER']}
 c.JupyterHub.admin_access = True

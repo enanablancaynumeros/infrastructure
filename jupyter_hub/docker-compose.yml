@@ -15,6 +15,7 @@ services:
       DOCKER_NETWORK_NAME: ${DOCKER_NETWORK_NAME}
       SSL_KEY: ${SSL_KEY}
       SSL_CERT: ${SSL_CERT}
+      ADMIN_USER: test
     command: >
       jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
     ports:

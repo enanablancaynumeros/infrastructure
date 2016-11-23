@@ -1,6 +1,6 @@
 include jupyter_hub/.env
 
-build_jupyter_hub: volumes
+build_jupyter_hub:
 	cd jupyter_hub && \
     docker-compose build
 
@@ -14,8 +14,10 @@ docker_logs:
 
 deploy_jupyterhub:
 	cd ansible && \
+	vagrant up && \
     ansible-playbook jupyterhub.yml
 
 only_deploy_jupyterhub:
 	cd ansible && \
+	vagrant up && \
     ansible-playbook jupyterhub.yml --tags deploy

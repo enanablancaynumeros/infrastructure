@@ -9,6 +9,3 @@ RUN pip install pip --upgrade
 RUN pip install \
   beautifulsoup4==4.4.* \
   xgboost==0.6a2
-
-# R notebook
-RUN conda install -c r r-essentials r-irkernel

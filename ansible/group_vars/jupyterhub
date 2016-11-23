@@ -11,3 +11,4 @@ jupyterhub_image_remote_dir: "/tmp/jupyterhub"
 custom_notebook_image_remote_dir: "/tmp/jupyterhub_custom_notebook"
 
 DOCKER_NETWORK_NAME: "jupyterhub-network"
+ADMIN_USER: "test"
