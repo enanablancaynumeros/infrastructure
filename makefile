@@ -12,5 +12,10 @@ docker_logs:
 	cd jupyter_hub && \
     docker-compose logs
 
-volumes:
-	@docker volume inspect $(DATA_VOLUME_HOST) >/dev/null 2>&1 || docker volume create --name $(DATA_VOLUME_HOST)
+deploy_jupyterhub:
+	cd ansible && \
+    ansible-playbook jupyterhub.yml
+
+only_deploy_jupyterhub:
+	cd ansible && \
+    ansible-playbook jupyterhub.yml --tags deploy
