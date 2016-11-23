@@ -1,22 +1,42 @@
-- name: copy the key to install docker
-  copy: src=files/yum_docker.repo dest=/etc/yum.repos.d/docker.repo
+- name: Download python pip
+  get_url:
+    url: "https://bootstrap.pypa.io/get-pip.py"
+    dest: /etc/get-pip.py
+    mode: 0440
   become: yes
   become_user: root
 
-# Install docker-engine on the remote machine
+- name: Install python pip
+  command: python /etc/get-pip.py
+  become: yes
+  become_user: root
+
+- name: Add repository to install docker
+  yum_repository:
+    name: epel
+    description: Docker Repository
+    gpgcheck: yes
+    enabled: true
+    gpgkey: https://yum.dockerproject.org/gpg
+    baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+  become: yes
+  become_user: root
+
 - name: Install docker engine
   yum:
     name: docker-engine
     state: present
+    update_cache: yes
   become: yes
   become_user: root
 
-- meta: flush_handlers
+- name: Enable docker service
+  command: systemctl enable docker.service
+  become: yes
+  become_user: root
 
-- name: install python-pip
-  yum:
-    name: python-pip
-    state: present
+- name: Start docker service
+  command: systemctl start docker
   become: yes
   become_user: root
 
@@ -31,7 +51,6 @@
   pip: name=docker-py
   become: yes
   become_user: root
-
 
  #Add user to docker group
 - name: add user to the docker group

@@ -1,0 +1,9 @@
+- name: Enable docker service
+  command: systemctl enable docker.service
+  become: yes
+  become_user: root
+
+- name: Start docker service
+  command: systemctl start docker
+  become: yes
+  become_user: root

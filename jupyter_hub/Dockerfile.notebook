@@ -11,4 +11,4 @@ RUN pip install \
   xgboost==0.6a2
 
 # R notebook
-RUN conda install -c r r-essentials
+RUN conda install -c r r-essentials r-irkernel

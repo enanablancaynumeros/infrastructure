@@ -1,4 +1,0 @@
-- name: Restart docker engine
-  service: name=docker state=restarted
-  become: yes
-  become_user: root

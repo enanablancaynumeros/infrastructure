@@ -1,0 +1,47 @@
+- name: Make sure path exists
+  file: path=~/tmp/docker state=directory mode=0755
+  delegate_to: 127.0.0.1
+
+- name: Tar the docker image of jupyterhub
+  command: docker save -o "{{ jupyterhub_image_local_dir }}" jupyterhub_jupyterhub
+  delegate_to: 127.0.0.1
+
+- name: Tar the docker image of the specific notebook
+  command: docker save -o "{{ custom_notebook_image_local_dir }}" jupyterhub_custom_notebook
+  delegate_to: 127.0.0.1
+
+- name: Copy docker jupyterhub image to hosts
+  copy: src={{ jupyterhub_image_local_dir }} dest={{ jupyterhub_image_remote_dir }}
+
+- name: Copy docker notebook image to hosts
+  copy: src={{ custom_notebook_image_local_dir }} dest={{ custom_notebook_image_remote_dir }}
+
+- name: Load jupyterhub docker image into the docker daemon
+  command: docker load -i {{ jupyterhub_image_remote_dir }}
+
+- name: Load notebook docker image into the docker daemon
+  command: docker load -i {{ custom_notebook_image_remote_dir }}
+
+- name: Create the docker network
+  docker_network:
+    name: "{{ DOCKER_NETWORK_NAME }}"
+
+- name: Start the jupyterhub container
+  docker_container:
+    name: jupyterhub
+    restart_policy: on-failure
+    image: jupyterhub_jupyterhub
+    keep_volumes: yes
+    restart: yes
+    state: started
+    env: "{{ jupyterhub_envs }}"
+    ports:
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+      - "data:/data"
+    command: >
+      jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
+    networks:
+      - name: "{{ DOCKER_NETWORK_NAME }}"
+  become: true

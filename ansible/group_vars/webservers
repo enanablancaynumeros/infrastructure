@@ -1,0 +1,13 @@
+jupyterhub_envs:
+    DOCKER_NOTEBOOK_IMAGE: jupyterhub_custom_notebook
+    DOCKER_NETWORK_NAME: jupyterhub-network
+    SSL_KEY: /srv/jupyterhub/server.key
+    SSL_CERT: /srv/jupyterhub/server.crt
+
+jupyterhub_image_local_dir: "~/tmp/docker/jupyterhub_image"
+custom_notebook_image_local_dir: "~/tmp/docker/custom_notebook_image"
+
+jupyterhub_image_remote_dir: "/tmp/jupyterhub"
+custom_notebook_image_remote_dir: "/tmp/jupyterhub_custom_notebook"
+
+DOCKER_NETWORK_NAME: "jupyterhub-network"

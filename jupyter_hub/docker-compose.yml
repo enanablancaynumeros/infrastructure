@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.jupyterhub
-    restart: always
+    restart: on-failure
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
       - "data:${DATA_VOLUME_CONTAINER}"
