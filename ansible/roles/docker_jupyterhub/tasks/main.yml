@@ -1,42 +1,42 @@
 - name: Make sure path exists
   file: path=~/tmp/docker state=directory mode=0755
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
 
 - name: Tar the docker image of jupyterhub
-  docker_image:
-    archive_path: "{{ jupyterhub_image_local_dir }}"
-    name: jupyterhub_jupyterhub
-    tag: v1
-  delegate_to: 127.0.0.1
+  command: docker save -o "{{ jupyterhub_images.local_dir }}" jupyterhub_jupyterhub
+  when: recreate_images == "true"
+  delegate_to: localhost
 
 - name: Tar the docker image of the specific notebook
-  docker_image:
-    archive_path: "{{ custom_notebook_image_local_dir }}"
-    name: jupyterhub_custom_notebook
-    tag: v1
-  delegate_to: 127.0.0.1
+  command: docker save -o "{{ custom_notebook_images.local_dir }}" jupyterhub_custom_notebook
+  when: recreate_images == "true"
+  delegate_to: localhost
 
 - name: Copy docker jupyterhub image to hosts
-  copy: src={{ jupyterhub_image_local_dir }} dest={{ jupyterhub_image_remote_dir }}
+  copy: src={{ jupyterhub_images.local_dir }} dest={{ jupyterhub_images.remote_dir }}
+  when: recreate_images == "true"
 
 - name: Copy docker notebook image to hosts
-  copy: src={{ custom_notebook_image_local_dir }} dest={{ custom_notebook_image_remote_dir }}
+  copy: src={{ custom_notebook_images.local_dir }} dest={{ custom_notebook_images.remote_dir }}
+  when: recreate_images == "true"
 
 - name: Load jupyterhub docker image into the docker daemon
   docker_image:
     name: jupyterhub_jupyterhub
-    tag: v1
-    load_path: "{{ jupyterhub_image_remote_dir }}"
+    state: present
+    load_path: "{{ jupyterhub_images.remote_dir }}"
+  when: recreate_images == "true"
 
 - name: Load notebook docker image into the docker daemon
   docker_image:
     name: jupyterhub_custom_notebook
-    tag: v1
-    load_path: "{{ custom_notebook_image_remote_dir }}"
+    state: present
+    load_path: "{{ custom_notebook_images.remote_dir }}"
+  when: recreate_images == "true"
 
 - name: Create the docker network
   docker_network:
-    name: "{{ DOCKER_NETWORK_NAME }}"
+    name: "{{ jupyterhub_envs.DOCKER_NETWORK_NAME }}"
 
 - name: Start the jupyterhub container
   docker_container:
@@ -55,5 +55,5 @@
     command: >
       jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
     networks:
-      - name: "{{ DOCKER_NETWORK_NAME }}"
+      - name: "{{ jupyterhub_envs.DOCKER_NETWORK_NAME }}"
   become: true
