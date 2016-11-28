@@ -15,9 +15,9 @@ docker_logs:
 deploy_jupyterhub:
 	cd ansible && \
 	vagrant up && \
-    ansible-playbook jupyterhub.yml -e recreate_images=true
+    ansible-playbook jupyterhub.yml -e recreate_images=true --vault-password-file ~/.vault_pass.txt
 
 only_deploy_jupyterhub:
 	cd ansible && \
 	vagrant up && \
-    ansible-playbook jupyterhub.yml --tags deploy
+    ansible-playbook jupyterhub.yml --tags deploy --vault-password-file ~/.vault_pass.txt
