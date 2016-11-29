@@ -18,6 +18,8 @@ services:
       ADMIN_USER: test
     command: >
       jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
+    networks:
+      - default
     ports:
       - "443:443"
 
