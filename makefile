@@ -1,11 +1,17 @@
 include jupyter_hub/.env
 
 build_jupyter_hub:
-	ansible-vault decrypt jupyter_hub/config/users.txt --vault-password-file ~/.vault_pass.txt && \
+	$(MAKE) decrypt_files && \
 	cd jupyter_hub && \
     docker-compose build && \
     cd .. && \
-    ansible-vault encrypt jupyter_hub/config/users.txt --vault-password-file ~/.vault_pass.txt
+    $(MAKE) encrypt_files
+
+decrypt_files:
+	ansible-vault decrypt jupyter_hub/config/users.txt --vault-password-file ~/.vault_pass.txt
+
+encrypt_files:
+	ansible-vault encrypt jupyter_hub/config/users.txt --vault-password-file ~/.vault_pass.txt
 
 run_jupyter_hub:
 	cd jupyter_hub && \
