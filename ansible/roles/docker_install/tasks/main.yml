@@ -1,5 +1,5 @@
 - name: Check pip is installed
-  shell: which pip
+  shell: rpm -q pip
   ignore_errors: yes
   register: pip_installed
 
@@ -8,13 +8,13 @@
     url: "https://bootstrap.pypa.io/get-pip.py"
     dest: /etc/get-pip.py
     mode: 0440
-  when: pip_installed|default("") == ""
+  when: "'is not installed' in pip_installed.stdout"
   become: yes
   become_user: root
 
 - name: Install python pip
   command: python /etc/get-pip.py
-  when: pip_installed|default("") == ""
+  when: "'is not installed' in pip_installed.stdout"
   become: yes
   become_user: root
 
