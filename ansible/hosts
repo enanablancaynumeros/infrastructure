@@ -1,7 +1,7 @@
 [jupyterhub]
 azure_server ansible_ssh_user=romery ansible_ssh_host=23.102.62.199
 
-[testing]
+[test]
 testserver ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222
 
 [data_science_servers]
